@@ -1,14 +1,22 @@
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
-    style::{Modifier, Style},
+    style::{Modifier, Style, Stylize},
     text::Line,
-    widgets::{block::Title, BarChart, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Paragraph},
+    widgets::{block::Title, Bar, BarChart, BarGroup, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Padding, Paragraph},
     Frame,
 };
+use std::env;
 
 use crate::app::App;
 
 pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
+    let date_format = if env::var("LANG").unwrap_or_default().contains("US")
+        || env::var("LC_TIME").unwrap_or_default().contains("US")
+    {
+        "%m/%d"
+    } else {
+        "%d/%m"
+    };
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
@@ -76,14 +84,22 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
     match app.stats_selected {
         0 => {
             // BarChart for Sessions
-            let mut data: Vec<(String, u64)> = app.statistics.recent_sessions.iter().map(|(d, v)| (d.format("%Y-%m-%d").to_string(), *v as u64)).collect();
+            let mut data: Vec<(String, u64)> = app.statistics.recent_sessions.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
             data.sort_by_key(|(date, _)| date.clone());
-            let data_refs: Vec<(&str, u64)> = data.iter().map(|(s, v)| (s.as_str(), *v)).collect();
+            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+                Bar::default()
+                    .value(*value)
+                    .label(label.clone().into())
+                    .text_value(format!("{:^5}", value))
+                    .value_style(Style::default().fg(app.theme.text).bg(app.theme.gauge_running).reversed())
+            }).collect();
             let barchart = BarChart::default()
-                .block(Block::default().title(Line::from(" Total Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)))
-                .data(&data_refs)
-                .bar_style(Style::default().fg(app.theme.gauge_running))
-                .value_style(Style::default().fg(app.theme.text));
+                .block(Block::default().title(Line::from(" Total Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)).padding(Padding::new(1, 0, 0, 0)))
+                .data(BarGroup::default().bars(&bars))
+                .bar_width(5)
+                .bar_gap(1)
+                .max(max_y);
             f.render_widget(barchart, chunks[1]);
         }
         1 => {
@@ -101,14 +117,22 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         }
         2 => {
             // BarChart for Focus Sessions
-            let mut data: Vec<(String, u64)> = app.statistics.recent_focus_sessions.iter().map(|(d, v)| (d.format("%Y-%m-%d").to_string(), *v as u64)).collect();
+            let mut data: Vec<(String, u64)> = app.statistics.recent_focus_sessions.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
             data.sort_by_key(|(date, _)| date.clone());
-            let data_refs: Vec<(&str, u64)> = data.iter().map(|(s, v)| (s.as_str(), *v)).collect();
+            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+                Bar::default()
+                    .value(*value)
+                    .label(label.clone().into())
+                    .text_value(format!("{:^5}", value))
+                    .value_style(Style::default().fg(app.theme.text).bg(app.theme.gauge_running).reversed())
+            }).collect();
             let barchart = BarChart::default()
-                .block(Block::default().title(Line::from(" Total Focus Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)))
-                .data(&data_refs)
-                .bar_style(Style::default().fg(app.theme.gauge_running))
-                .value_style(Style::default().fg(app.theme.text));
+                .block(Block::default().title(Line::from(" Total Focus Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)).padding(Padding::new(1, 0, 0, 0)))
+                .data(BarGroup::default().bars(&bars))
+                .bar_width(5)
+                .bar_gap(1)
+                .max(max_y);
             f.render_widget(barchart, chunks[1]);
         }
         3 => {
@@ -126,14 +150,22 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         }
         4 => {
             // BarChart for Break Sessions
-            let mut data: Vec<(String, u64)> = app.statistics.recent_break_sessions.iter().map(|(d, v)| (d.format("%Y-%m-%d").to_string(), *v as u64)).collect();
+            let mut data: Vec<(String, u64)> = app.statistics.recent_break_sessions.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
             data.sort_by_key(|(date, _)| date.clone());
-            let data_refs: Vec<(&str, u64)> = data.iter().map(|(s, v)| (s.as_str(), *v)).collect();
+            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+                Bar::default()
+                    .value(*value)
+                    .label(label.clone().into())
+                    .text_value(format!("{:^5}", value))
+                    .value_style(Style::default().fg(app.theme.text).bg(app.theme.sparkline).reversed())
+            }).collect();
             let barchart = BarChart::default()
-                .block(Block::default().title(Line::from(" Total Break Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)))
-                .data(&data_refs)
-                .bar_style(Style::default().fg(app.theme.sparkline))
-                .value_style(Style::default().fg(app.theme.text));
+                .block(Block::default().title(Line::from(" Total Break Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)).padding(Padding::new(1, 0, 0, 0)))
+                .data(BarGroup::default().bars(&bars))
+                .bar_width(5)
+                .bar_gap(1)
+                .max(max_y);
             f.render_widget(barchart, chunks[1]);
         }
         5 => {
@@ -151,14 +183,22 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         }
         6 => {
             // BarChart for Grown Plants
-            let mut data: Vec<(String, u64)> = app.statistics.recent_plants.iter().map(|(d, v)| (d.format("%Y-%m-%d").to_string(), *v as u64)).collect();
+            let mut data: Vec<(String, u64)> = app.statistics.recent_plants.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
             data.sort_by_key(|(date, _)| date.clone());
-            let data_refs: Vec<(&str, u64)> = data.iter().map(|(s, v)| (s.as_str(), *v)).collect();
+            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+                Bar::default()
+                    .value(*value)
+                    .label(label.clone().into())
+                    .text_value(format!("{:^5}", value))
+                    .value_style(Style::default().fg(app.theme.text).bg(app.theme.highlight).reversed())
+            }).collect();
             let barchart = BarChart::default()
-                .block(Block::default().title(Line::from(" Total Grown Plants ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)))
-                .data(&data_refs)
-                .bar_style(Style::default().fg(app.theme.highlight))
-                .value_style(Style::default().fg(app.theme.text));
+                .block(Block::default().title(Line::from(" Total Grown Plants ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)).padding(Padding::new(1, 0, 0, 0)))
+                .data(BarGroup::default().bars(&bars))
+                .bar_width(5)
+                .bar_gap(1)
+                .max(max_y);
             f.render_widget(barchart, chunks[1]);
         }
         7 => {
