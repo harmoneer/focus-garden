@@ -37,6 +37,9 @@ pub struct Statistics {
     pub recent_focus_sessions: Vec<(DateTime<Local>, u32)>,
     pub recent_break_sessions: Vec<(DateTime<Local>, u32)>,
     pub recent_plants: Vec<(DateTime<Local>, u32)>,
+    pub recent_minutes: Vec<(DateTime<Local>, u64)>,
+    pub recent_focus_minutes: Vec<(DateTime<Local>, u64)>,
+    pub recent_break_minutes: Vec<(DateTime<Local>, u64)>,
 }
 
 impl Default for Statistics {
@@ -55,6 +58,9 @@ impl Default for Statistics {
             recent_focus_sessions: vec![],
             recent_break_sessions: vec![],
             recent_plants: vec![],
+            recent_minutes: vec![],
+            recent_focus_minutes: vec![],
+            recent_break_minutes: vec![],
         }
     }
 }

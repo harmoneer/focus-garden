@@ -84,6 +84,12 @@ impl App {
             } else {
                 self.statistics.recent_sessions.push((today, 1));
             }
+            // Update recent_minutes
+            if let Some((_, mins)) = self.statistics.recent_minutes.iter_mut().find(|(d, _)| d.date_naive() == today.date_naive()) {
+                *mins += minutes;
+            } else {
+                self.statistics.recent_minutes.push((today, minutes));
+            }
             match self.timer.session_type {
                 crate::timer::SessionType::Focus => {
                     self.statistics.total_focus_sessions += 1;
@@ -94,6 +100,12 @@ impl App {
                     } else {
                         self.statistics.recent_focus_sessions.push((today, 1));
                     }
+                    // Update recent_focus_minutes
+                    if let Some((_, mins)) = self.statistics.recent_focus_minutes.iter_mut().find(|(d, _)| d.date_naive() == today.date_naive()) {
+                        *mins += minutes;
+                    } else {
+                        self.statistics.recent_focus_minutes.push((today, minutes));
+                    }
                 }
                 _ => {
                     self.statistics.total_break_sessions += 1;
@@ -103,6 +115,12 @@ impl App {
                         *count += 1;
                     } else {
                         self.statistics.recent_break_sessions.push((today, 1));
+                    }
+                    // Update recent_break_minutes
+                    if let Some((_, mins)) = self.statistics.recent_break_minutes.iter_mut().find(|(d, _)| d.date_naive() == today.date_naive()) {
+                        *mins += minutes;
+                    } else {
+                        self.statistics.recent_break_minutes.push((today, minutes));
                     }
                 }
             }
