@@ -330,28 +330,39 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             // Text display for Longest Streak
             let streak = app.garden.longest_streak;
             let big_streak = BigText::builder()
-                .lines(vec![Line::from(streak.to_string())])
+                .lines(vec![Line::from(format!("{:^3}", streak.to_string()))])
                 .pixel_size(PixelSize::Quadrant)
+                .alignment(Alignment::Center)
                 .build();
-            let block = Block::default().title(Line::from(" Longest Streak ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)).padding(Padding::new(1, 0, 1, 0));
+            let block = Block::default()
+                .title(Line::from(" Longest Streak ").style(Style::default().fg(app.theme.blocks)))
+                .borders(Borders::ALL)
+                .style(Style::default().fg(app.theme.blocks))
+                .padding(Padding::new(0, 0, 0, 0));
             let inner = block.inner(chunks[1]);
             f.render_widget(block, chunks[1]);
+            let vertical_areas = Layout::vertical([
+                Constraint::Fill(1),
+                Constraint::Length(8),
+                Constraint::Fill(1),
+            ]).split(inner);
+            let sub_areas = Layout::horizontal([
+                Constraint::Fill(1),
+                Constraint::Length(12),
+                Constraint::Fill(1),
+            ]).split(vertical_areas[1]);
+            let sub_block = Block::default()
+                .title_bottom(Line::from(" days ").alignment(Alignment::Center))
+                .borders(Borders::ALL)
+                .padding(Padding::new(0, 0, 0, 0));
+            let sub_inner = sub_block.inner(sub_areas[1]);
+            f.render_widget(sub_block, sub_areas[1]);
             let areas = Layout::vertical([
                 Constraint::Length(1),
-                Constraint::Fill(1),
+                Constraint::Length(5),
                 Constraint::Length(1),
-            ]).split(inner);
-            f.render_widget(
-                Paragraph::new("Longest Streak")
-                    .alignment(Alignment::Center),
-                areas[0],
-            );
+            ]).split(sub_inner);
             f.render_widget(big_streak, areas[1]);
-            f.render_widget(
-                Paragraph::new("days")
-                    .alignment(Alignment::Center),
-                areas[2],
-            );
         }
 
         _ => {}
