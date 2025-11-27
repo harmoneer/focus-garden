@@ -300,6 +300,7 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             f.render_widget(big_date, date_areas[1]);
             let counting_block = Block::default()
                 .title(Line::from(" Counting ").alignment(Alignment::Center))
+                .title_bottom(Line::from(" days ").alignment(Alignment::Center))
                 .borders(Borders::ALL)
                 .padding(Padding::new(0, 0, 0, 0));
             let counting_inner = counting_block.inner(areas[1]);
@@ -313,6 +314,11 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
                 Paragraph::new("")
                     .alignment(Alignment::Center),
                 areas[2],
+            );
+            f.render_widget(
+                Paragraph::new("")
+                    .alignment(Alignment::Center),
+                areas[3],
             );
             f.render_widget(
                 Paragraph::new("")
