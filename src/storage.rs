@@ -86,7 +86,7 @@ impl Default for Statistics {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Data {
     pub current_plant_stage: u32,
-    pub growth_points: Vec<(u16, u16)>,
+    pub growth_points: u32,
     pub settings: Settings,
     pub statistics: Statistics,
     pub auto_run: Vec<crate::timer::SessionType>,
@@ -97,7 +97,7 @@ impl Default for Data {
     fn default() -> Self {
         Data {
             current_plant_stage: 0,
-            growth_points: vec![],
+            growth_points: 0,
             settings: Settings::default(),
             statistics: Statistics::default(),
             auto_run: vec![],

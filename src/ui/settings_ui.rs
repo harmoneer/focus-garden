@@ -36,7 +36,7 @@ pub fn draw_settings(f: &mut Frame, app: &App, area: Rect) {
         })
         .collect();
     let list = List::new(items)
-        .block(Block::default().title_top(Line::from(" Settings ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
+        .block(Block::default().title_top(Line::from(" Settings ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
     f.render_widget(list, chunks[0]);
 
     // Right: Adjustment
@@ -95,6 +95,6 @@ pub fn draw_settings(f: &mut Frame, app: &App, area: Rect) {
         _ => vec![],
     };
     let right_list = List::new(right_items)
-        .block(Block::default().title_top(Line::from(" Adjust ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
+        .block(Block::default().title_top(Line::from(" Adjust ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
     f.render_widget(right_list, chunks[1]);
 }

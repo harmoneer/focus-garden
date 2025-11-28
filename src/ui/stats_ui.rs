@@ -73,7 +73,7 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         })
         .collect();
     let list = List::new(items)
-        .block(Block::default().title_top(Line::from(" Today's Stats ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
+        .block(Block::default().title_top(Line::from(" Today's Stats ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
     f.render_widget(list, left_chunks[0]);
 
     // Breakdown

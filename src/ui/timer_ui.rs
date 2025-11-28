@@ -17,7 +17,7 @@ pub fn draw_timer(f: &mut Frame, app: &App, area: Rect) {
 
     // Timer display
     let timer_block = Block::default()
-        .title_top(Line::from(" Focus Timer ").style(Style::default().fg(app.theme.blocks)))
+        .title_top(Line::from(" Focus Timer ").style(Style::default().fg(app.theme.blocks)).centered())
         .borders(Borders::ALL)
         .style(Style::default().fg(app.theme.blocks));
     let inner_area = timer_block.inner(chunks[0]);
@@ -102,7 +102,7 @@ pub fn draw_timer(f: &mut Frame, app: &App, area: Rect) {
         })
         .collect();
     let session_list = List::new(session_items)
-        .block(Block::default().title_top(Line::from(" Sessions ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
+        .block(Block::default().title_top(Line::from(" Sessions ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
     f.render_widget(session_list, left_chunks[0]);
     let add_legend = Paragraph::new("Add to auto [Enter]")
         .style(Style::default().fg(app.theme.secondary_text))
@@ -134,7 +134,7 @@ pub fn draw_timer(f: &mut Frame, app: &App, area: Rect) {
         })
         .collect();
     let auto_list = List::new(auto_items)
-        .block(Block::default().title_top(Line::from(" Auto-Run Set ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
+        .block(Block::default().title_top(Line::from(" Auto-Run Set ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
     f.render_widget(auto_list, right_chunks[0]);
     let remove_legend = Paragraph::new("Remove [Del]")
         .style(Style::default().fg(app.theme.secondary_text))

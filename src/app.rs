@@ -129,6 +129,7 @@ impl App {
                     }
                 }
             }
+            self.plant.add_growth();
             if self.plant.is_complete() {
                 self.garden.add_completed_plant(self.plant.clone());
                 self.plant = Plant::new();
@@ -360,7 +361,7 @@ impl App {
         statistics.longest_streak_dates = self.garden.longest_streak_dates.clone();
         let data = Data {
             current_plant_stage: self.plant.stage.to_u32(),
-            growth_points: self.plant.growth_points.clone(),
+            growth_points: self.plant.growth_points,
             settings: self.settings.clone(),
             statistics,
             auto_run: self.timer.auto_run.clone(),
