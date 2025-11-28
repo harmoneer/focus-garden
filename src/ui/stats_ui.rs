@@ -153,7 +153,8 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             } else {
                 vec![Span::styled(data[0].0.format(date_format).to_string(), Style::default().add_modifier(Modifier::BOLD))]
             };
-            let max_y = data.iter().map(|(_, v)| *v as u64).max().unwrap_or(0).max(10);
+            let max_val = data.iter().map(|(_, v)| *v as u64).max().unwrap_or(0);
+            let max_y = ((max_val as f64 / 10.0).ceil() * 10.0) as u64;
             let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value as u64)
@@ -195,7 +196,8 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             // BarChart for Focus Sessions
             let mut data: Vec<(DateTime<Local>, u64)> = app.statistics.recent_focus_sessions.iter().map(|(d, v)| (*d, *v as u64)).collect();
             data.sort_by_key(|(d, _)| d.date_naive());
-            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let max_val = data.iter().map(|(_, v)| *v).max().unwrap_or(0);
+            let max_y = ((max_val as f64 / 10.0).ceil() * 10.0) as u64;
             let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value)
@@ -237,7 +239,8 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             // BarChart for Break Sessions
             let mut data: Vec<(DateTime<Local>, u64)> = app.statistics.recent_break_sessions.iter().map(|(d, v)| (*d, *v as u64)).collect();
             data.sort_by_key(|(d, _)| d.date_naive());
-            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let max_val = data.iter().map(|(_, v)| *v).max().unwrap_or(0);
+            let max_y = ((max_val as f64 / 10.0).ceil() * 10.0) as u64;
             let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value)
@@ -279,7 +282,8 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             // BarChart for Grown Plants
             let mut data: Vec<(DateTime<Local>, u64)> = app.statistics.recent_plants.iter().map(|(d, v)| (*d, *v as u64)).collect();
             data.sort_by_key(|(d, _)| d.date_naive());
-            let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
+            let max_val = data.iter().map(|(_, v)| *v).max().unwrap_or(0);
+            let max_y = ((max_val as f64 / 10.0).ceil() * 10.0) as u64;
             let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value)
