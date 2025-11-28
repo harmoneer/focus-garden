@@ -257,6 +257,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tui-big-text",
+ "tui-piechart",
 ]
 
 [[package]]
@@ -748,6 +749,15 @@ dependencies = [
  "derive_builder",
  "font8x8",
  "itertools 0.14.0",
+ "ratatui",
+]
+
+[[package]]
+name = "tui-piechart"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "711bfc5c0d3fa49acd91f977df39f07da95312a9e1326866e332a67097147ae1"
+dependencies = [
  "ratatui",
 ]
 

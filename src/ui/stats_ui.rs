@@ -2,9 +2,10 @@ use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style, Stylize},
     text::Line,
-    widgets::{block::Title, Bar, BarChart, BarGroup, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Padding, Paragraph},
+    widgets::{block::Title, Bar, BarChart, BarGroup, Block, Borders, Chart, Dataset, GraphType, List, ListItem, Padding, Paragraph, Widget},
     Frame,
 };
+use tui_piechart::{PieChart, PieSlice, symbols};
 use std::env;
 
 use crate::app::App;
@@ -76,57 +77,65 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
     f.render_widget(list, left_chunks[0]);
 
     // Breakdown
-    let breakdown_content = match app.stats_selected {
-        0 => format!("Focus: {}, Break: {}", app.statistics.total_focus_sessions, app.statistics.total_break_sessions),
-        1 => format!("Focused: {}, Break: {}", app.statistics.total_focus_minutes, app.statistics.total_break_minutes),
-        2 => {
-            let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::Focus)).take(10).map(|l| format!("Focus session - {} mins - {}", l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))).collect::<Vec<_>>().join("\n");
-            if logs.is_empty() { "No focus sessions".to_string() } else { logs }
-        }
-        3 => {
-            let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::Focus)).take(10).map(|l| format!("Focus session - {} mins - {}", l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))).collect::<Vec<_>>().join("\n");
-            if logs.is_empty() { "No focus sessions".to_string() } else { logs }
-        }
-        4 => {
-            let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::ShortBreak | crate::timer::SessionType::LongBreak)).take(10).map(|l| {
-                let name = match l.session_type {
-                    crate::timer::SessionType::ShortBreak => "Short break",
-                    crate::timer::SessionType::LongBreak => "Long break",
-                    _ => "Break",
-                };
-                format!("{} - {} mins - {}", name, l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))
-            }).collect::<Vec<_>>().join("\n");
-            if logs.is_empty() { "No break sessions".to_string() } else { logs }
-        }
-        5 => {
-            let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::ShortBreak | crate::timer::SessionType::LongBreak)).take(10).map(|l| {
-                let name = match l.session_type {
-                    crate::timer::SessionType::ShortBreak => "Short break",
-                    crate::timer::SessionType::LongBreak => "Long break",
-                    _ => "Break",
-                };
-                format!("{} - {} mins - {}", name, l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))
-            }).collect::<Vec<_>>().join("\n");
-            if logs.is_empty() { "No break sessions".to_string() } else { logs }
-        }
-        6 => {
-            let logs = app.garden.completed_plants.iter().rev().take(10).map(|p| format!("Grown plant - {} - {}", p.plant.stage, p.completed_at.with_timezone(&Local).format("%Y-%m-%dT%H:%M:%S%.6f%z"))).collect::<Vec<_>>().join("\n");
-            if logs.is_empty() { "No grown plants".to_string() } else { logs }
-        }
-        7 => {
-            let dates = app.garden.current_streak_dates.iter().map(|d| d.format("%Y-%m-%d").to_string()).collect::<Vec<_>>().join("\n");
-            format!("Streak Dates:\n{}", dates)
-        },
-        8 => {
-            let dates = app.garden.longest_streak_dates.iter().map(|d| d.format("%Y-%m-%d").to_string()).collect::<Vec<_>>().join("\n");
-            format!("Streak Dates:\n{}", dates)
-        },
-        _ => "Breakdown not available".to_string(),
-    };
-    let breakdown = Paragraph::new(breakdown_content)
-        .block(Block::default().title_top(Line::from(" Breakdown ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)))
-        .style(Style::default().fg(app.theme.text));
-    f.render_widget(breakdown, left_chunks[1]);
+    if app.stats_selected == 0 {
+        let data = vec![
+            PieSlice::new("Focus", app.statistics.total_focus_sessions as f64, app.theme.pine),
+            PieSlice::new("Break", app.statistics.total_break_sessions as f64, app.theme.rose),
+        ];
+        let pie = PieChart::new(data).block(Block::default().title_top(Line::from(" Breakdown ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks))).pie_char(symbols::PIE_CHAR_BLOCK);
+        f.render_widget(pie, left_chunks[1]);
+    } else {
+        let breakdown_content = match app.stats_selected {
+            1 => format!("Focused: {}, Break: {}", app.statistics.total_focus_minutes, app.statistics.total_break_minutes),
+            2 => {
+                let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::Focus)).take(10).map(|l| format!("Focus session - {} mins - {}", l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))).collect::<Vec<_>>().join("\n");
+                if logs.is_empty() { "No focus sessions".to_string() } else { logs }
+            }
+            3 => {
+                let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::Focus)).take(10).map(|l| format!("Focus session - {} mins - {}", l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))).collect::<Vec<_>>().join("\n");
+                if logs.is_empty() { "No focus sessions".to_string() } else { logs }
+            }
+            4 => {
+                let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::ShortBreak | crate::timer::SessionType::LongBreak)).take(10).map(|l| {
+                    let name = match l.session_type {
+                        crate::timer::SessionType::ShortBreak => "Short break",
+                        crate::timer::SessionType::LongBreak => "Long break",
+                        _ => "Break",
+                    };
+                    format!("{} - {} mins - {}", name, l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))
+                }).collect::<Vec<_>>().join("\n");
+                if logs.is_empty() { "No break sessions".to_string() } else { logs }
+            }
+            5 => {
+                let logs = app.statistics.session_log.iter().rev().filter(|l| matches!(l.session_type, crate::timer::SessionType::ShortBreak | crate::timer::SessionType::LongBreak)).take(10).map(|l| {
+                    let name = match l.session_type {
+                        crate::timer::SessionType::ShortBreak => "Short break",
+                        crate::timer::SessionType::LongBreak => "Long break",
+                        _ => "Break",
+                    };
+                    format!("{} - {} mins - {}", name, l.duration, l.end_time.format("%Y-%m-%dT%H:%M:%S%.6f%z"))
+                }).collect::<Vec<_>>().join("\n");
+                if logs.is_empty() { "No break sessions".to_string() } else { logs }
+            }
+            6 => {
+                let logs = app.garden.completed_plants.iter().rev().take(10).map(|p| format!("Grown plant - {} - {}", p.plant.stage, p.completed_at.with_timezone(&Local).format("%Y-%m-%dT%H:%M:%S%.6f%z"))).collect::<Vec<_>>().join("\n");
+                if logs.is_empty() { "No grown plants".to_string() } else { logs }
+            }
+            7 => {
+                let dates = app.garden.current_streak_dates.iter().map(|d| d.format("%Y-%m-%d").to_string()).collect::<Vec<_>>().join("\n");
+                format!("Streak Dates:\n{}", dates)
+            },
+            8 => {
+                let dates = app.garden.longest_streak_dates.iter().map(|d| d.format("%Y-%m-%d").to_string()).collect::<Vec<_>>().join("\n");
+                format!("Streak Dates:\n{}", dates)
+            },
+            _ => "Breakdown not available".to_string(),
+        };
+        let breakdown = Paragraph::new(breakdown_content)
+            .block(Block::default().title_top(Line::from(" Breakdown ").style(Style::default().fg(app.theme.blocks))).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)))
+            .style(Style::default().fg(app.theme.text));
+        f.render_widget(breakdown, left_chunks[1]);
+    }
 
     // Right: Chart
     match app.stats_selected {
