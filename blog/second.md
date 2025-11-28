@@ -21,10 +21,18 @@ This devlog covers the implementation of real charts, polished navigation, scrol
 
 ## 🌻 Current Progress: Prototype Complete
 
-Since Devlog #1, we've implemented nearly all planned features, transforming Focus Garden from a concept into a working TUI app. Here's what's been built:
+Since Devlog #1, we've implemented nearly all planned features, transforming Focus Garden from a concept into a working TUI app. The app is built in Rust using:
+
+- **ratatui** for core TUI widgets (BarChart, List, Scrollbar, etc.)
+- **tui-big-text** for large timer and streak displays
+- **tui-piechart** for pie chart visualizations
+- **crossterm** for terminal backend and input handling
+- **serde / JSON** for data persistence
+
+Here's what's been built:
 
 ### ⏳ Timer Tab — Fully Functional with Auto-Run
-- **Big Timer Display**: Using `tui-big-text` for large, readable digits
+- **Big Timer Display**: Using the `tui-big-text` crate for large, readable digits
 - **Progress Gauge**: Visual session completion indicator
 - **Session Selection**: Keyboard-navigable blocks for Focus, Short Break, Long Break
 - **Auto-Run Queue**: Add sessions to a queue that runs automatically
@@ -44,14 +52,12 @@ This tab remains intentionally minimal — just the plant, progress, and a touch
 ### 📊 Stats Tab — Real Charts Implemented
 - **Daily Metrics**: Total sessions, minutes, focus/break breakdowns
 - **Chart Types**:
-  - **Sparkline**: Compact daily trends
-  - **Bar Chart**: Session counts over time
-  - **Line Chart**: Minute trends
-  - **Pie Chart**: Focus vs. break time distribution
+  - **Bar Chart**: Trends over time for sessions, minutes, focus/break data
+  - **Pie Chart**: Breakdowns of focus vs. break time
 - **Interactive UI**: Left panel selects metric category, right panel updates chart
 - **Data Aggregation**: Daily stats with historical tracking
 
-Charts are now fully functional using Ratatui's chart widgets, providing visual insights into productivity patterns.
+Charts are now fully functional using Ratatui's BarChart and the third-party tui-piechart crate, providing visual insights into productivity patterns.
 
 ### ⚙️ Settings Tab — Configurable and Auto-Saving
 - **Duration Settings**: Adjustable focus, short break, long break times

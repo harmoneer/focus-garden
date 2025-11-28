@@ -44,6 +44,7 @@ Plants display as emojis — simple, readable, consistent across terminals.
 ---
 
 ## 🧱 Project Architecture (High-Level)
+```
 src/
 ├─ main.rs
 ├─ app.rs // global app state
@@ -59,6 +60,7 @@ src/
 ├─ plant_ui.rs
 ├─ stats_ui.rs
 └─ settings_ui.rs
+```
 
 
 Each tab renders independently and communicates only via `AppState`.
