@@ -1,15 +1,15 @@
 use ratatui::{
-    layout::{Alignment, Constraint, Direction, Layout, Rect},
+    layout::{Alignment, Constraint, Direction, Layout, Margin, Rect},
     style::{Modifier, Style},
     text::Line,
-    widgets::{block::Title, Block, Borders, Gauge, List, ListItem, Paragraph},
+    widgets::{block::Title, Block, Borders, Gauge, List, ListItem, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
 };
 use tui_big_text::{BigText, PixelSize};
 
 use crate::{app::App, timer::SessionType};
 
-pub fn draw_timer(f: &mut Frame, app: &App, area: Rect) {
+pub fn draw_timer(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Min(10), Constraint::Length(10)])
@@ -112,8 +112,11 @@ pub fn draw_timer(f: &mut Frame, app: &App, area: Rect) {
     // Right: Auto-run set
     let right_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Min(5), Constraint::Length(1)])
+        .constraints([Constraint::Length(9), Constraint::Length(1)])
         .split(bottom_chunks[1]);
+    let auto_block = Block::default().title_top(Line::from(" Auto-Run Set ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks));
+    let inner_area = auto_block.inner(right_chunks[0]);
+    f.render_widget(auto_block, right_chunks[0]);
     let auto_items: Vec<ListItem> = app.timer.auto_run
         .iter()
         .enumerate()
@@ -133,11 +136,28 @@ pub fn draw_timer(f: &mut Frame, app: &App, area: Rect) {
             ListItem::new(text).style(style)
         })
         .collect();
-    let auto_list = List::new(auto_items)
-        .block(Block::default().title_top(Line::from(" Auto-Run Set ").style(Style::default().fg(app.theme.blocks)).centered()).borders(Borders::ALL).style(Style::default().fg(app.theme.blocks)));
-    f.render_widget(auto_list, right_chunks[0]);
-    let remove_legend = Paragraph::new("Remove [Del]")
-        .style(Style::default().fg(app.theme.secondary_text))
-        .alignment(ratatui::layout::Alignment::Center);
-    f.render_widget(remove_legend, right_chunks[1]);
+    let content_length = auto_items.len();
+    let auto_list = List::new(auto_items);
+    f.render_stateful_widget(auto_list, inner_area, &mut app.timer_auto_list_state);
+    app.timer_auto_scrollbar_state = app.timer_auto_scrollbar_state
+        .content_length(content_length)
+        .viewport_content_length(7)
+        .position(app.timer_auto_list_state.offset() as usize);
+    let scrollbar_area = ratatui::layout::Rect {
+        x: inner_area.x,
+        y: inner_area.y,
+        width: inner_area.width + 1,
+        height: inner_area.height,
+    };
+    let scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+        .begin_symbol(Some("▲"))
+        .end_symbol(Some("▼"))
+        .track_symbol(Some("│"))
+        .thumb_symbol("█")
+        .thumb_style(Style::default().fg(app.theme.text))
+        .track_style(Style::default().fg(app.theme.secondary_text))
+        .begin_style(Style::default().fg(app.theme.secondary_text))
+        .end_style(Style::default().fg(app.theme.secondary_text));
+    f.render_stateful_widget(scrollbar, scrollbar_area, &mut app.timer_auto_scrollbar_state);
+
 }

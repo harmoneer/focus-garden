@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             // Main content
             match app.tab {
-                Tab::Timer => timer_ui::draw_timer(f, &app, chunks[1]),
+                Tab::Timer => timer_ui::draw_timer(f, &mut app, chunks[1]),
                 Tab::Plant => plant_ui::draw_plant(f, &app, chunks[1]),
                 Tab::Stats => stats_ui::draw_stats(f, &app, chunks[1]),
                 Tab::Settings => settings_ui::draw_settings(f, &app, chunks[1]),

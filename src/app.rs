@@ -5,6 +5,7 @@ use crate::plant::Plant;
 use crate::storage::{load_data, save_data, Data, Settings, Statistics};
 use crate::theme::{Theme, ThemeVariant};
 use crate::timer::{SessionType, Timer};
+use ratatui::widgets::{ListState, ScrollbarState};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Tab {
@@ -36,6 +37,8 @@ pub struct App {
     pub stats_selected: usize,
     pub focus: Focus,
     pub should_quit: bool,
+    pub timer_auto_list_state: ListState,
+    pub timer_auto_scrollbar_state: ScrollbarState,
 }
 
 impl App {
@@ -67,12 +70,14 @@ impl App {
             settings,
             statistics,
             theme,
-            timer_selected_session: 0,
-            timer_selected_auto: 0,
-            settings_selected: 0,
-            stats_selected: 0,
-            focus: Focus::Left,
-            should_quit: false,
+             timer_selected_session: 0,
+             timer_selected_auto: 0,
+             settings_selected: 0,
+             stats_selected: 0,
+             focus: Focus::Left,
+             should_quit: false,
+             timer_auto_list_state: ListState::default(),
+             timer_auto_scrollbar_state: ScrollbarState::new(1000),
         }
     }
 
@@ -201,27 +206,28 @@ impl App {
                         self.timer.switch_session(selected_session, &self.settings);
                         self.timer.start();
                     }
-            } else {
-                // Logic for right focus - start selected auto-run session
-                if !self.timer.auto_run.is_empty() && self.timer_selected_auto < self.timer.auto_run.len() {
-                    let selected_session = self.timer.auto_run[self.timer_selected_auto];
-                    if self.timer.session_type == selected_session {
-                        match self.timer.state {
-                            crate::timer::TimerState::Idle => {
-                                self.timer.start();
-                                self.timer.auto_run_index = Some(self.timer_selected_auto);
-                            }
-                            crate::timer::TimerState::Running => self.timer.pause(),
-                            crate::timer::TimerState::Paused => self.timer.resume(),
-                            _ => {}
-                        }
-                    } else {
-                        self.timer.switch_session(selected_session, &self.settings);
-                        self.timer.start();
-                        self.timer.auto_run_index = Some(self.timer_selected_auto);
-                    }
-                }
-            }
+             } else {
+                 // Logic for right focus - start selected auto-run session
+                 if !self.timer.auto_run.is_empty() && self.timer_selected_auto < self.timer.auto_run.len() {
+                     let selected_session = self.timer.auto_run[self.timer_selected_auto];
+                     if self.timer.session_type == selected_session {
+                         match self.timer.state {
+                             crate::timer::TimerState::Idle => {
+                                 self.timer.start();
+                                 self.timer.auto_run_index = Some(self.timer_selected_auto);
+                             }
+                             crate::timer::TimerState::Running => self.timer.pause(),
+                             crate::timer::TimerState::Paused => self.timer.resume(),
+                             _ => {}
+                         }
+                     } else {
+                         self.timer.switch_session(selected_session, &self.settings);
+                         self.timer.start();
+                         self.timer.auto_run_index = Some(self.timer_selected_auto);
+                     }
+                 }
+             }
+             self.timer_auto_list_state.select(Some(self.timer_selected_auto));
             }
             InputAction::Stop => {
                 if self.tab == Tab::Timer {
@@ -229,29 +235,32 @@ impl App {
                 }
             }
             InputAction::Quit => self.should_quit = true,
-            InputAction::Enter => {
-                if self.tab == Tab::Timer && self.focus == Focus::Left {
-                    let sessions = vec![SessionType::Focus, SessionType::ShortBreak, SessionType::LongBreak];
-                    if self.timer_selected_session < sessions.len() {
-                        self.timer.add_to_auto_run(sessions[self.timer_selected_session]);
-                    }
-                }
-            }
-            InputAction::Delete => {
-                if self.tab == Tab::Timer && self.focus == Focus::Right && !self.timer.auto_run.is_empty() && self.timer_selected_auto < self.timer.auto_run.len() {
-                    self.timer.auto_run.remove(self.timer_selected_auto);
-                    if let Some(idx) = self.timer.auto_run_index {
-                        if idx == self.timer_selected_auto {
-                            self.timer.auto_run_index = None;
-                        } else if idx > self.timer_selected_auto {
-                            self.timer.auto_run_index = Some(idx - 1);
-                        }
-                    }
-                    if self.timer_selected_auto >= self.timer.auto_run.len() && self.timer_selected_auto > 0 {
-                        self.timer_selected_auto -= 1;
-                    }
-                }
-            }
+             InputAction::Enter => {
+                 if self.tab == Tab::Timer && self.focus == Focus::Left {
+                     let sessions = vec![SessionType::Focus, SessionType::ShortBreak, SessionType::LongBreak];
+                     if self.timer_selected_session < sessions.len() {
+                         self.timer.add_to_auto_run(sessions[self.timer_selected_session]);
+                         self.timer_selected_auto = self.timer.auto_run.len() - 1;
+                         self.timer_auto_list_state.select(Some(self.timer_selected_auto));
+                     }
+                 }
+             }
+             InputAction::Delete => {
+                 if self.tab == Tab::Timer && self.focus == Focus::Right && !self.timer.auto_run.is_empty() && self.timer_selected_auto < self.timer.auto_run.len() {
+                     self.timer.auto_run.remove(self.timer_selected_auto);
+                     if let Some(idx) = self.timer.auto_run_index {
+                         if idx == self.timer_selected_auto {
+                             self.timer.auto_run_index = None;
+                         } else if idx > self.timer_selected_auto {
+                             self.timer.auto_run_index = Some(idx - 1);
+                         }
+                     }
+                     if self.timer_selected_auto >= self.timer.auto_run.len() && self.timer_selected_auto > 0 {
+                         self.timer_selected_auto -= 1;
+                     }
+                     self.timer_auto_list_state.select(Some(self.timer_selected_auto));
+                 }
+             }
         }
     }
 
@@ -265,6 +274,7 @@ impl App {
                 } else {
                     if self.timer_selected_auto > 0 {
                         self.timer_selected_auto -= 1;
+                        self.timer_auto_list_state.select(Some(self.timer_selected_auto));
                     }
                 }
             }
@@ -297,6 +307,7 @@ impl App {
                 } else {
                     if self.timer_selected_auto < self.timer.auto_run.len().saturating_sub(1) {
                         self.timer_selected_auto += 1;
+                        self.timer_auto_list_state.select(Some(self.timer_selected_auto));
                     }
                 }
             }
