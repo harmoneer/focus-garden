@@ -114,7 +114,7 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
             if !data.iter().any(|(d, _)| d.date_naive() == today.date_naive()) {
                 data.push((today, 0));
             }
-            data.sort_by_key(|(d, _)| Reverse(d.date_naive()));
+            data.sort_by_key(|(d, _)| d.date_naive());
             let chart_data: Vec<(f64, f64)> = data.iter().enumerate().map(|(i, (_, v))| (i as f64, *v as f64)).collect();
             let x_labels = if data.len() >= 3 {
                 vec![
@@ -170,13 +170,13 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         }
         2 => {
             // BarChart for Focus Sessions
-            let mut data: Vec<(String, u64)> = app.statistics.recent_focus_sessions.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
-            data.sort_by_key(|(date, _)| date.clone());
+            let mut data: Vec<(DateTime<Local>, u64)> = app.statistics.recent_focus_sessions.iter().map(|(d, v)| (*d, *v as u64)).collect();
+            data.sort_by_key(|(d, _)| d.date_naive());
             let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
-            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+            let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value)
-                    .label(label.clone().into())
+                    .label(date.format(date_format).to_string().into())
                     .text_value(format!("{:^5}", value))
                     .value_style(Style::default().fg(app.theme.pine).bg(app.theme.foam))
                     .style(Style::default().fg(app.theme.foam))
@@ -212,13 +212,13 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         }
         4 => {
             // BarChart for Break Sessions
-            let mut data: Vec<(String, u64)> = app.statistics.recent_break_sessions.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
-            data.sort_by_key(|(date, _)| date.clone());
+            let mut data: Vec<(DateTime<Local>, u64)> = app.statistics.recent_break_sessions.iter().map(|(d, v)| (*d, *v as u64)).collect();
+            data.sort_by_key(|(d, _)| d.date_naive());
             let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
-            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+            let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value)
-                    .label(label.clone().into())
+                    .label(date.format(date_format).to_string().into())
                     .text_value(format!("{:^5}", value))
                     .value_style(Style::default().fg(app.theme.pine).bg(app.theme.foam))
                     .style(Style::default().fg(app.theme.foam))
@@ -254,13 +254,13 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         }
         6 => {
             // BarChart for Grown Plants
-            let mut data: Vec<(String, u64)> = app.statistics.recent_plants.iter().map(|(d, v)| (d.format(date_format).to_string(), *v as u64)).collect();
-            data.sort_by_key(|(date, _)| date.clone());
+            let mut data: Vec<(DateTime<Local>, u64)> = app.statistics.recent_plants.iter().map(|(d, v)| (*d, *v as u64)).collect();
+            data.sort_by_key(|(d, _)| d.date_naive());
             let max_y = data.iter().map(|(_, v)| *v).max().unwrap_or(0).max(10);
-            let bars: Vec<Bar> = data.iter().map(|(label, value)| {
+            let bars: Vec<Bar> = data.iter().map(|(date, value)| {
                 Bar::default()
                     .value(*value)
-                    .label(label.clone().into())
+                    .label(date.format(date_format).to_string().into())
                     .text_value(format!("{:^5}", value))
                     .value_style(Style::default().fg(app.theme.vertical_value).bg(app.theme.highlight))
                     .style(Style::default().fg(app.theme.foam))
