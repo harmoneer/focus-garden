@@ -58,7 +58,8 @@ pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
     let progress = match app.plant.growth_points {
         0..=1 => (app.plant.growth_points as f64 / 2.0 * 100.0) as u16,
         2..=4 => ((app.plant.growth_points - 2) as f64 / 3.0 * 100.0) as u16,
-        5..=9 => 0,
+        5..=7 => ((app.plant.growth_points - 5) as f64 / 3.0 * 100.0) as u16,
+        8..=9 => ((app.plant.growth_points - 8) as f64 / 2.0 * 100.0) as u16,
         _ => 100,
     };
     let gauge = Gauge::default()
@@ -71,7 +72,8 @@ pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
     let next_stage = match app.plant.growth_points {
         0..=1 => "Sprout",
         2..=4 => "Seedling",
-        5..=9 => "Young Plant",
+        5..=7 => "Young Plant",
+        8..=9 => "Complete",
         _ => "Complete",
     };
     let info = format!("{} sessions to {}", app.plant.sessions_to_next_stage(), next_stage);

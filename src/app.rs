@@ -130,7 +130,6 @@ impl App {
                     }
                 }
             }
-            self.plant.add_growth();
             if self.plant.is_complete() {
                 self.garden.add_completed_plant(self.plant.clone());
                 self.plant = Plant::new();

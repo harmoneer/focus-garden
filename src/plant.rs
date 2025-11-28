@@ -87,7 +87,8 @@ impl Plant {
         self.stage = match self.growth_points {
             0..=1 => PlantStage::Seed,
             2..=4 => PlantStage::Sprout,
-            5..=9 => PlantStage::Seedling,
+            5..=7 => PlantStage::Seedling,
+            8..=9 => PlantStage::YoungPlant,
             10.. => PlantStage::FullGrownPlant,
         };
     }
@@ -104,7 +105,8 @@ impl Plant {
         match self.growth_points {
             0..=1 => 2 - self.growth_points,
             2..=4 => 5 - self.growth_points,
-            5..=9 => 10 - self.growth_points,
+            5..=7 => 8 - self.growth_points,
+            8..=9 => 10 - self.growth_points,
             _ => 0,
         }
     }
