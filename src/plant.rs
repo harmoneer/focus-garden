@@ -1,6 +1,6 @@
 
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum PlantStage {
     Seed,
     Sprout,
@@ -55,7 +55,7 @@ impl PlantStage {
 
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Plant {
     pub stage: PlantStage,
     pub growth_points: u32,
@@ -85,10 +85,9 @@ impl Plant {
 
     pub fn update_stage(&mut self) {
         self.stage = match self.growth_points {
-            0..=2 => PlantStage::Seed,
-            3..=5 => PlantStage::Sprout,
-            6..=8 => PlantStage::Seedling,
-            9 => PlantStage::YoungPlant,
+            0..=1 => PlantStage::Seed,
+            2..=4 => PlantStage::Sprout,
+            5..=9 => PlantStage::Seedling,
             10.. => PlantStage::FullGrownPlant,
         };
     }
@@ -103,10 +102,9 @@ impl Plant {
 
     pub fn sessions_to_next_stage(&self) -> u32 {
         match self.growth_points {
-            0..=2 => 3 - self.growth_points,
-            3..=5 => 6 - self.growth_points,
-            6..=8 => 9 - self.growth_points,
-            9 => 1,
+            0..=1 => 2 - self.growth_points,
+            2..=4 => 5 - self.growth_points,
+            5..=9 => 10 - self.growth_points,
             _ => 0,
         }
     }

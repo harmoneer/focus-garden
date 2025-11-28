@@ -2,17 +2,16 @@ use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::Style,
     text::Line,
-    widgets::{Block, Borders, Gauge, Paragraph},
+    widgets::{block::Title, Block, Borders, Gauge, Padding, Paragraph},
     Frame,
 };
-use tui_big_text::{BigText, PixelSize};
 
 use crate::app::App;
 
 pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
         .split(area);
 
     // Left: Growing Plant
@@ -24,45 +23,62 @@ pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
 
     let left_inner = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Length(5), Constraint::Length(2), Constraint::Min(3)])
-        .margin(1)
+        .constraints([Constraint::Length(2), Constraint::Length(5), Constraint::Length(1), Constraint::Min(3)])
         .split(chunks[0]);
 
-    // Big emoji
-    let big_text = BigText::builder()
-        .lines(vec![app.plant.stage.icon().into()])
-        .pixel_size(PixelSize::Quadrant)
+    // Emoji subblock
+    let emoji_layout = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Fill(1),
+            Constraint::Length(10),
+            Constraint::Fill(1),
+        ])
+        .split(left_inner[1]);
+    let emoji_block = Block::default()
+        .borders(Borders::ALL)
+        .style(Style::default().fg(app.theme.blocks));
+    let emoji_inner = emoji_block.inner(emoji_layout[1]);
+    f.render_widget(emoji_block, emoji_layout[1]);
+    // Vertical centering inside the 3-line block
+    let emoji_vert = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Length(1),
+            Constraint::Min(1),
+            Constraint::Length(1),
+        ])
+        .split(emoji_inner);
+    let emoji_para = Paragraph::new(app.plant.stage.icon())
         .style(Style::default().fg(app.theme.text))
-        .build();
-    f.render_widget(big_text, left_inner[0]);
+        .alignment(Alignment::Center);
+    f.render_widget(emoji_para, emoji_vert[1]);
 
     // Progress bar
     let progress = match app.plant.growth_points {
-        0..=2 => (app.plant.growth_points as f64 / 3.0 * 100.0) as u16,
-        3..=5 => ((app.plant.growth_points - 3) as f64 / 3.0 * 100.0) as u16,
-        6..=8 => ((app.plant.growth_points - 6) as f64 / 3.0 * 100.0) as u16,
-        9 => 100,
+        0..=1 => (app.plant.growth_points as f64 / 2.0 * 100.0) as u16,
+        2..=4 => ((app.plant.growth_points - 2) as f64 / 3.0 * 100.0) as u16,
+        5..=9 => 0,
         _ => 100,
     };
     let gauge = Gauge::default()
-        .block(Block::default().title(Line::from("Stage Progress").style(Style::default().fg(app.theme.blocks))))
+        .block(Block::default().padding(Padding::horizontal(1)))
         .gauge_style(Style::default().fg(app.theme.gauge_running))
         .percent(progress);
-    f.render_widget(gauge, left_inner[1]);
+    f.render_widget(gauge, left_inner[2]);
 
     // Sessions to next
     let next_stage = match app.plant.growth_points {
-        0..=2 => "Sprout",
-        3..=5 => "Seedling",
-        6..=8 => "Young Plant",
-        9 => "Full Grown Plant",
+        0..=1 => "Sprout",
+        2..=4 => "Seedling",
+        5..=9 => "Young Plant",
         _ => "Complete",
     };
     let info = format!("{} sessions to {}", app.plant.sessions_to_next_stage(), next_stage);
     let para = Paragraph::new(info)
         .style(Style::default().fg(app.theme.text))
         .alignment(Alignment::Center);
-    f.render_widget(para, left_inner[2]);
+    f.render_widget(para, left_inner[3]);
 
     // Right: Garden
     let right_block = Block::default()
@@ -80,12 +96,14 @@ pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
     // Plants
     let plants_text = "🪴".repeat(app.garden.total_completed() as usize);
     let plants_para = Paragraph::new(plants_text)
-        .style(Style::default().fg(app.theme.text));
+        .style(Style::default().fg(app.theme.text))
+        .block(Block::default().padding(Padding::horizontal(1)));
     f.render_widget(plants_para, right_inner[0]);
 
     // Total
     let total = format!("Total fully grown plants: {}", app.garden.total_completed());
     let total_para = Paragraph::new(total)
-        .style(Style::default().fg(app.theme.secondary_text));
+        .style(Style::default().fg(app.theme.secondary_text))
+        .block(Block::default().padding(Padding::horizontal(1)));
     f.render_widget(total_para, right_inner[1]);
 }

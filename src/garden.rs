@@ -1,7 +1,7 @@
 use chrono::{DateTime, NaiveDate, Utc, Duration};
 use crate::plant::Plant;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct CompletedPlant {
     pub plant: Plant,
     pub completed_at: DateTime<Utc>,

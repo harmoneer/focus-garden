@@ -54,6 +54,7 @@ impl App {
         garden.longest_streak_end_date = data.statistics.longest_streak_end_date;
         garden.current_streak_dates = data.statistics.current_streak_dates.clone();
         garden.longest_streak_dates = data.statistics.longest_streak_dates.clone();
+        garden.completed_plants = data.completed_plants.clone();
         garden.update_streaks(&data.statistics.recent_sessions);
         let statistics = data.statistics;
         let theme = Theme::new(settings.theme);
@@ -364,6 +365,7 @@ impl App {
             growth_points: self.plant.growth_points,
             settings: self.settings.clone(),
             statistics,
+            completed_plants: self.garden.completed_plants.clone(),
             auto_run: self.timer.auto_run.clone(),
             auto_run_index: self.timer.auto_run_index,
         };
