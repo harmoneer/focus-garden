@@ -11,7 +11,7 @@ use crate::app::App;
 pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
+        .constraints([Constraint::Percentage(30), Constraint::Percentage(70)])
         .split(area);
 
     // Left: Growing Plant

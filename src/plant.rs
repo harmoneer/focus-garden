@@ -11,7 +11,13 @@ pub enum PlantStage {
 
 impl std::fmt::Display for PlantStage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{:?}", self)
+        match self {
+            PlantStage::Seed => write!(f, "Seed"),
+            PlantStage::Sprout => write!(f, "Sprout"),
+            PlantStage::Seedling => write!(f, "Seedling"),
+            PlantStage::YoungPlant => write!(f, "Young Plant"),
+            PlantStage::FullGrownPlant => write!(f, "Fully Grown Plant"),
+        }
     }
 }
 
