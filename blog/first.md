@@ -133,19 +133,20 @@ It worked… but:
 - Emojis are portable, readable, and cute  
 
 So we moved to an emoji model:
-`pub enum PlantStage {
+```rust
+pub enum PlantStage {
     Seed,       // 🌰
     Sprout,     // 🌱
     Flower,     // 🌸
     Tree,       // 🌳
-}`
+}```
 
 And the UI simply renders:
 `Current plant: 🌱 Sprout (2 sessions until 🌸)`
 Much cleaner. Much happier.
 
 ## JSON Persistence Format
-`{
+```{
   "current_plant": {
     "stage": "Sprout",
     "sessions": 3
@@ -171,7 +172,7 @@ Much cleaner. Much happier.
     },
     "theme": "RosePineDark"
   }
-}`
+}```
 
 # 🚧 What’s Coming Next?
 - Implementing real charts in the Stats tab
