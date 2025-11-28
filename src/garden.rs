@@ -45,7 +45,7 @@ impl Garden {
         self.completed_plants.len()
     }
 
-    pub fn update_streaks(&mut self, recent_sessions: &Vec<(DateTime<chrono::Local>, u32)>) {
+    pub fn update_streaks(&mut self, recent_sessions: &[(DateTime<chrono::Local>, u32)]) {
         use chrono::Local;
         if recent_sessions.is_empty() {
             self.current_streak = 0;

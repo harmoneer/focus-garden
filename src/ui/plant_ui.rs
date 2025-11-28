@@ -96,7 +96,7 @@ pub fn draw_plant(f: &mut Frame, app: &App, area: Rect) {
         .split(chunks[1]);
 
     // Plants
-    let plants_text = "🪴".repeat(app.garden.total_completed() as usize);
+    let plants_text = "🪴".repeat(app.garden.total_completed());
     let plants_para = Paragraph::new(plants_text)
         .style(Style::default().fg(app.theme.text))
         .block(Block::default().padding(Padding::horizontal(1)));

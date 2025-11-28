@@ -25,7 +25,7 @@ pub fn draw_stats(f: &mut Frame, app: &App, area: Rect) {
         &app.statistics.recent_focus_minutes,
         &app.statistics.recent_break_minutes,
     ].iter().flat_map(|v| v.iter().map(|(_, m)| *m)).max().unwrap_or(0);
-    let max_y = ((max_minute_value as f64 / 10.0).ceil() * 10.0) as f64;
+    let max_y = (max_minute_value as f64 / 10.0).ceil() * 10.0;
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])

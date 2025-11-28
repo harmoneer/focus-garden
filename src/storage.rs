@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, Utc, NaiveDate};
+use chrono::{DateTime, Local};
 use crate::timer::SessionType;
 use crate::garden::CompletedPlant;
 use serde::{Deserialize, Serialize};
@@ -32,6 +32,7 @@ impl Default for Settings {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Default)]
 pub struct Statistics {
     pub total_sessions: u32,
     pub total_focus_sessions: u32,
@@ -56,35 +57,9 @@ pub struct Statistics {
     pub recent_break_minutes: Vec<(DateTime<Local>, u64)>,
 }
 
-impl Default for Statistics {
-    fn default() -> Self {
-        Statistics {
-            total_sessions: 0,
-            total_focus_sessions: 0,
-            total_break_sessions: 0,
-            total_minutes: 0,
-            total_focus_minutes: 0,
-            total_break_minutes: 0,
-            completed_plants: 0,
-            current_streak: 0,
-            longest_streak: 0,
-            current_streak_start_date: None,
-            longest_streak_end_date: None,
-            current_streak_dates: vec![],
-            longest_streak_dates: vec![],
-            session_log: vec![],
-            recent_sessions: vec![],
-            recent_focus_sessions: vec![],
-            recent_break_sessions: vec![],
-            recent_plants: vec![],
-            recent_minutes: vec![],
-            recent_focus_minutes: vec![],
-            recent_break_minutes: vec![],
-        }
-    }
-}
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Default)]
 pub struct Data {
     pub current_plant_stage: u32,
     pub growth_points: u32,
@@ -95,19 +70,6 @@ pub struct Data {
     pub auto_run_index: Option<usize>,
 }
 
-impl Default for Data {
-    fn default() -> Self {
-        Data {
-            current_plant_stage: 0,
-            growth_points: 0,
-            settings: Settings::default(),
-            statistics: Statistics::default(),
-            completed_plants: vec![],
-            auto_run: vec![],
-            auto_run_index: None,
-        }
-    }
-}
 
 pub fn get_data_path() -> PathBuf {
     let mut path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));

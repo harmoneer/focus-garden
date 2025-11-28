@@ -2,7 +2,7 @@ use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Modifier, Style},
     text::Line,
-    widgets::{Block, Borders, Gauge, List, ListItem, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
+    widgets::{Block, Borders, Gauge, List, ListItem, Paragraph, Scrollbar, ScrollbarOrientation},
     Frame,
 };
 use tui_big_text::{BigText, PixelSize};
@@ -86,7 +86,7 @@ pub fn draw_timer(f: &mut Frame, app: &mut App, area: Rect) {
         .direction(Direction::Vertical)
         .constraints([Constraint::Min(5), Constraint::Length(1)])
         .split(bottom_chunks[0]);
-    let sessions = vec!["Focus", "Short Break", "Long Break"];
+    let sessions = ["Focus", "Short Break", "Long Break"];
     let session_items: Vec<ListItem> = sessions
         .iter()
         .enumerate()
@@ -142,7 +142,7 @@ pub fn draw_timer(f: &mut Frame, app: &mut App, area: Rect) {
     app.timer_auto_scrollbar_state = app.timer_auto_scrollbar_state
         .content_length(content_length)
         .viewport_content_length(7)
-        .position(app.timer_auto_list_state.offset() as usize);
+        .position(app.timer_auto_list_state.offset());
     let scrollbar_area = ratatui::layout::Rect {
         x: inner_area.x,
         y: inner_area.y,

@@ -15,12 +15,10 @@ pub fn draw_settings(f: &mut Frame, app: &App, area: Rect) {
         .split(area);
 
     // Left: Settings list
-    let settings = vec![
-        format!("Focus Duration: {} min", app.settings.focus_duration),
+    let settings = [format!("Focus Duration: {} min", app.settings.focus_duration),
         format!("Short Break: {} min", app.settings.short_break_duration),
         format!("Long Break: {} min", app.settings.long_break_duration),
-        format!("Theme: {:?}", app.settings.theme),
-    ];
+        format!("Theme: {:?}", app.settings.theme)];
     let items: Vec<ListItem> = settings
         .iter()
         .enumerate()
@@ -76,7 +74,7 @@ pub fn draw_settings(f: &mut Frame, app: &App, area: Rect) {
             ])).style(style)]
         }
         3 => {
-            let themes = vec!["System", "Rose Pine Light", "Rose Pine Dark"];
+            let themes = ["System", "Rose Pine Light", "Rose Pine Dark"];
             let current_index = match app.settings.theme {
                 crate::theme::ThemeVariant::System => 0,
                 crate::theme::ThemeVariant::RosePineLight => 1,

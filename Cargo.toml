@@ -2,6 +2,12 @@
 name = "taman"
 version = "0.1.0"
 edition = "2021"
+authors = ["harmoneer <brush.busy@gmail.com>"]
+description = "A terminal-based Pomodoro productivity app where your focus sessions grow plants."
+license = "MIT"
+repository = "https://github.com/harmoneer/taman"
+keywords = ["pomodoro", "productivity", "terminal", "tui", "ratatui"]
+categories = ["command-line-utilities", "productivity"]
 
 [dependencies]
 ratatui = "0.29"

@@ -193,7 +193,7 @@ impl App {
             }
             InputAction::Space => {
                 if self.tab == Tab::Timer && self.focus == Focus::Left {
-                    let sessions = vec![SessionType::Focus, SessionType::ShortBreak, SessionType::LongBreak];
+                    let sessions = [SessionType::Focus, SessionType::ShortBreak, SessionType::LongBreak];
                     let selected_session = sessions[self.timer_selected_session];
                     if self.timer.session_type == selected_session {
                         match self.timer.state {
@@ -237,7 +237,7 @@ impl App {
             InputAction::Quit => self.should_quit = true,
              InputAction::Enter => {
                  if self.tab == Tab::Timer && self.focus == Focus::Left {
-                     let sessions = vec![SessionType::Focus, SessionType::ShortBreak, SessionType::LongBreak];
+                     let sessions = [SessionType::Focus, SessionType::ShortBreak, SessionType::LongBreak];
                      if self.timer_selected_session < sessions.len() {
                          self.timer.add_to_auto_run(sessions[self.timer_selected_session]);
                          self.timer_selected_auto = self.timer.auto_run.len() - 1;
@@ -271,11 +271,9 @@ impl App {
                     if self.timer_selected_session > 0 {
                         self.timer_selected_session -= 1;
                     }
-                } else {
-                    if self.timer_selected_auto > 0 {
-                        self.timer_selected_auto -= 1;
-                        self.timer_auto_list_state.select(Some(self.timer_selected_auto));
-                    }
+                } else if self.timer_selected_auto > 0 {
+                    self.timer_selected_auto -= 1;
+                    self.timer_auto_list_state.select(Some(self.timer_selected_auto));
                 }
             }
             Tab::Settings => {
@@ -304,11 +302,9 @@ impl App {
                     if self.timer_selected_session < max {
                         self.timer_selected_session += 1;
                     }
-                } else {
-                    if self.timer_selected_auto < self.timer.auto_run.len().saturating_sub(1) {
-                        self.timer_selected_auto += 1;
-                        self.timer_auto_list_state.select(Some(self.timer_selected_auto));
-                    }
+                } else if self.timer_selected_auto < self.timer.auto_run.len().saturating_sub(1) {
+                    self.timer_selected_auto += 1;
+                    self.timer_auto_list_state.select(Some(self.timer_selected_auto));
                 }
             }
             Tab::Settings => {
@@ -334,19 +330,19 @@ impl App {
     fn adjust_setting(&mut self, delta: i64) {
         match self.settings_selected {
             0 => { // Focus
-                self.settings.focus_duration = (self.settings.focus_duration as i64 + delta).max(1).min(60) as u64;
+                self.settings.focus_duration = (self.settings.focus_duration as i64 + delta).clamp(1, 60) as u64;
                 if self.timer.session_type == SessionType::Focus {
                     self.timer.set_session(SessionType::Focus, &self.settings);
                 }
             }
             1 => { // Short break
-                self.settings.short_break_duration = (self.settings.short_break_duration as i64 + delta).max(1).min(60) as u64;
+                self.settings.short_break_duration = (self.settings.short_break_duration as i64 + delta).clamp(1, 60) as u64;
                 if self.timer.session_type == SessionType::ShortBreak {
                     self.timer.set_session(SessionType::ShortBreak, &self.settings);
                 }
             }
             2 => { // Long break
-                self.settings.long_break_duration = (self.settings.long_break_duration as i64 + delta).max(1).min(60) as u64;
+                self.settings.long_break_duration = (self.settings.long_break_duration as i64 + delta).clamp(1, 60) as u64;
                 if self.timer.session_type == SessionType::LongBreak {
                     self.timer.set_session(SessionType::LongBreak, &self.settings);
                 }
