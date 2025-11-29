@@ -1,1 +1,2 @@
-[![Buy Me a Coffee at ko-fi.com](https://plok.sh/kofi.png)](https://ko-fi.com/A0A81PC8ZA)
+Taman is out!
+```cargo install taman```
