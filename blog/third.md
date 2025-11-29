@@ -1,10 +1,10 @@
 # 🌱 Taman Devlog #3 — Crates.io Release and Community Launch
 
-Welcome back to **Taman**, the Rust TUI Pomodoro app where your focus sessions literally grow plants! In [Devlog #2](second.md), we shared the completion of the working prototype with real charts, themes, and plant growth. Now, we're thrilled to announce that Taman has been published to crates.io, making it easy for anyone to install and try out!
+Welcome back to **Taman**, the Rust TUI Pomodoro app where your focus sessions literally grow plants! In [Devlog #2](https://plok.sh/harmoneer/taman/second), we shared the completion of the working prototype with real charts, themes, and plant growth. Now, we're thrilled to announce that Taman has been published to crates.io, making it easy for anyone to install and try out!
 
 This devlog covers the packaging process, release preparations, and our plans for the future. Plus, if you enjoy Taman, consider supporting us with a coffee!
 
-<a href='https://ko-fi.com/A0A81PC8ZA' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi4.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+[![Buy Me a Coffee at ko-fi.com](https://storage.ko-fi.com/cdn/kofi4.png?v=6)](https://ko-fi.com/A0A81PC8ZA)
 
 ---
 
