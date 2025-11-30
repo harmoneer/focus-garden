@@ -89,12 +89,6 @@ MIT License
 - [Devlog #3](blog/third.md) - Crates.io release and community launch
 - [Devlog #4](blog/fourth.md) - Expanded theme support
 
-## More screenshots
-![Timer Page](https://github.com/harmoneer/taman/blob/master/screenshots/1.%20Timer%20Page.png?raw=true)
-![Plant Page](https://github.com/harmoneer/taman/blob/master/screenshots/2.%20Plant%20Page.png?raw=true)
-![Stats Page](https://github.com/harmoneer/taman/blob/master/screenshots/3.%20Stats%20Page.png?raw=true)
-![Settings Page](https://github.com/harmoneer/taman/blob/master/screenshots/4.%20Settings%20Page.png?raw=true)
-
 ---
 
 🌿 Grow your focus, grow your garden.
