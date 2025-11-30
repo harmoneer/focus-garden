@@ -1,6 +1,6 @@
 [package]
 name = "taman"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["harmoneer <brush.busy@gmail.com>"]
 description = "A TUI Pomodoro productivity app where your focus sessions grow plants."
