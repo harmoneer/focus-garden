@@ -5,7 +5,7 @@
 [![Buy Me a Coffee at ko-fi.com](https://plok.sh/kofi.png)](https://ko-fi.com/A0A81PC8ZA)
 
 ## Features
-[![Taman Features](https://github.com/harmoneer/taman/blob/master/screenshots/taman2.gif?raw=true)]
+[![Taman Features](https://github.com/harmoneer/taman/blob/master/screenshots/tamanv0.1.3.gif?raw=true)]
 
 - **Pomodoro Timer**: Configurable focus, short break, and long break durations
 - **Plant Growth**: Emoji-based plants that grow with each completed session
