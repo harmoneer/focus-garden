@@ -61,5 +61,4 @@ Taman v0.1.3 makes your focus garden bloom in your favorite colors! Whether you 
 
 If you have theme suggestions or feedback, let us know on GitHub!
 
-🌿 Happy theming!</content>
-<parameter name="filePath">blog/fourth.md
+🌿 Happy theming!
