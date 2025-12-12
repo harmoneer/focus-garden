@@ -42,6 +42,7 @@ Taman is a terminal user interface (TUI) app. Run it and use the following keys:
 - **Arrow Keys**: Navigate within tabs
 - **Enter**: Select/activate
 - **Space**: Start/pause timer
+- **p**: Pause/unpause the timer
 - **s**: Stop timer
 - **q**: Quit
 

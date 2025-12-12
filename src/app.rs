@@ -229,6 +229,15 @@ impl App {
              }
              self.timer_auto_list_state.select(Some(self.timer_selected_auto));
             }
+            InputAction::Pause => {
+                if self.tab == Tab::Timer {
+                    match self.timer.state {
+                        crate::timer::TimerState::Running => self.timer.pause(),
+                        crate::timer::TimerState::Paused => self.timer.resume(),
+                        _ => {}
+                    }
+                }
+            }
             InputAction::Stop => {
                 if self.tab == Tab::Timer {
                     self.timer.stop();
